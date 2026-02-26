@@ -2,8 +2,8 @@
 
 ### Вариант 1. Через Git
 ```bat
-git clone <github.com\usrnmeee\LR-2-Semester>
-cd <LR-2-Semester>
+git clone [github.com\usrnmeee\LR-2-Semester](https://github.com/usrnmeee/LR-2-Semester)
+cd LR-2-Semester
 scripts\setup_env.bat
 ````
 
