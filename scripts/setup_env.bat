@@ -6,43 +6,31 @@ REM CONFIG
 REM =========================
 set ENV_NAME=data_env
 set PYTHON_VERSION=3.11
-set REQUIREMENTS=requirements.txt
-set TEST_SCRIPT=broken_env.py
+set REQUIREMENTS=../requirements.txt
+set TEST_SCRIPT=../broken_env.py
 
 echo =========================
-echo   SETUP START
+echo       SETUP START
 echo =========================
+echo.
 
 REM =========================
-REM 1. Locate conda
+REM 1. Find conda
 REM =========================
-
-set CONDA_EXE=
 
 where conda >nul 2>&1
-if %errorlevel%==0 (
-    for /f "delims=" %%i in ('where conda') do (
-        set CONDA_EXE=%%i
-        goto :conda_found
-    )
+if %errorlevel% neq 0 (
+    echo [ERROR] Conda not found in PATH.
+    goto :error
 )
 
-REM Try default locations
-if exist "%USERPROFILE%\anaconda3\condabin\conda.bat" (
-    set CONDA_EXE=%USERPROFILE%\anaconda3\condabin\conda.bat
-    goto :conda_found
+for /f "delims=" %%i in ('where conda') do (
+    set CONDA_PATH=%%i
+    goto :found_conda
 )
 
-if exist "C:\ProgramData\anaconda3\condabin\conda.bat" (
-    set CONDA_EXE=C:\ProgramData\anaconda3\condabin\conda.bat
-    goto :conda_found
-)
-
-echo [ERROR] Conda not found.
-goto :error
-
-:conda_found
-echo Using conda: %CONDA_EXE%
+:found_conda
+echo Found conda: %CONDA_PATH%
 
 REM =========================
 REM 2. Check if env exists
@@ -63,7 +51,7 @@ REM =========================
 
 if exist %REQUIREMENTS% (
     echo Installing dependencies...
-    conda run -n %ENV_NAME% python -m pip install -r %REQUIREMENTS%
+    call conda run -n %ENV_NAME% python -m pip install -r %REQUIREMENTS%
     if %errorlevel% neq 0 goto :error
 ) else (
     echo No requirements.txt found. Skipping dependency installation.
@@ -74,9 +62,12 @@ REM 4. Smoke test
 REM =========================
 
 echo Running smoke test...
-conda run -n %ENV_NAME% python %TEST_SCRIPT%
+call conda activate %ENV_NAME%
+call python %TEST_SCRIPT%
+call conda deactivate
 if %errorlevel% neq 0 goto :error
 
+echo.
 echo =========================
 echo        [OK]
 echo =========================
@@ -92,4 +83,3 @@ echo.
 echo Press any key to exit...
 pause >nul
 exit /b
-
