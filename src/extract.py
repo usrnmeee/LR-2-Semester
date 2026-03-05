@@ -22,7 +22,6 @@ def load_config(config_path: str) -> dict:
 
 
 def build_url(config: dict) -> str:
-    """Construct full API URL."""
     base_url = config["api"]["base_url"].rstrip("/")
     request_template = config["api"]["request_template"]
     return f"{base_url}{request_template}"
