@@ -1,1 +1,3 @@
-pandas==2.2.2
+pandas
+pyyaml
+requests

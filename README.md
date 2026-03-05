@@ -30,3 +30,31 @@ scripts\setup_env.bat
 * `docs/Implementation_Plan.md` — план реализации
 * `docs/Data_Contract.md` — описание данных
 * `docs/LLM_Usage_Log.md` — лог работы с LLM
+
+## Извлечение данных (Extract)
+
+Для загрузки данных используется скрипт `scripts/extract.py`, который читает параметры источника из конфигурационного файла и выполняет HTTP-запрос к API.
+
+Пример запуска:
+
+```bat
+conda run -n data_env python scripts\extract.py configs\variant_09.yml
+```
+Скрипт:
+* читает настройки из /configs/variant_09.yml; 
+* выполняет запрос к API World Bank; 
+* сохраняет исходный JSON-ответ в слой raw.
+
+
+## Хранение данных
+Raw-данные сохраняются в папку /data/raw.
+Пример структуры:
+```
+data/
+  raw/
+    variant_09/
+      raw_YYYYMMDD_HHMMSS.json
+```
+  
+Каждый запуск создаёт новый файл с временной меткой.
+Сохраняется полный оригинальный ответ API для последующей обработки.
