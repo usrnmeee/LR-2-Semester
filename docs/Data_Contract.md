@@ -90,4 +90,92 @@ API возвращает JSON-массив из двух элементов:
 * Дубликаты по `(country_iso3, indicator, year)` не допускаются.
 * Raw-данные сохраняются без изменений в `/data/raw`.
 
+
+
+---
+# Normalized Data Schema
+
+## Зерно таблицы
+
+**Одна строка таблицы = одно значение экономического индикатора (GDP) для конкретной страны и конкретного года.**
+
+В рамках проекта используется одна страна — **Russia (RUS)** — и один индикатор — **GDP (current US$)**.
+
+---
+
+## Схема normalized-таблицы
+
+| Поле            | Тип      | Nullable | Источник в raw JSON | Описание                            |
+| --------------- | -------- | -------- | ------------------- | ----------------------------------- |
+| country_id      | string   | no       | `country.id`        | Двухбуквенный код страны            |
+| country_name    | string   | no       | `country.value`     | Название страны                     |
+| countryiso3code | string   | no       | `countryiso3code`   | Трёхбуквенный ISO-код страны        |
+| indicator_id    | string   | no       | `indicator.id`      | Код экономического индикатора       |
+| indicator_name  | string   | no       | `indicator.value`   | Название экономического индикатора  |
+| date            | datetime | no       | `date`              | Год наблюдения                      |
+| value           | float    | yes      | `value`             | Значение GDP в текущих долларах США |
+
+---
+
+## Пример строки normalized-таблицы
+
+| country_id | country_name       | countryiso3code | indicator_id   | indicator_name    | date | value            |
+| ---------- | ------------------ | --------------- | -------------- | ----------------- | ---- | ---------------- |
+| RU         | Russian Federation | RUS             | NY.GDP.MKTP.CD | GDP (current US$) | 2024 | 2173835806671.66 |
+
+---
+
+## Основные преобразования (raw → normalized)
+
+В процессе нормализации выполняются следующие шаги:
+
+1. **Разворачивание JSON-структуры**
+   Используется `pandas.json_normalize` для преобразования вложенных объектов (`country`, `indicator`) в колонки таблицы.
+
+2. **Переименование колонок**
+   Поля `indicator.id`, `indicator.value`, `country.id`, `country.value` переименованы в более удобные названия.
+
+3. **Приведение типов данных**
+
+   * `date` → `datetime`
+   * `value` → `float`
+
+4. **Удаление строк без значения GDP**
+
+   Строки, где `value = NULL`, удаляются из normalized-таблицы.
+
+5. **Удаление дубликатов**
+
+   Дубликаты по `(countryiso3code, indicator_id, date)` удаляются.
+
+---
+
+## Расположение данных
+
+Normalized-данные сохраняются в:
+
 ```
+data/normalized/
+```
+
+Формат файла:
+
+```
+normalized_YYmmdd_HHMMSS.csv
+```
+
+Пример:
+
+```
+data/normalized/normalized_20260305_102335.csv
+```
+
+---
+
+## Назначение normalized-слоя
+
+Normalized-данные используются для:
+
+* исследовательского анализа данных (EDA);
+* построения графиков и агрегатов;
+* подготовки аналитических витрин данных (data mart).
