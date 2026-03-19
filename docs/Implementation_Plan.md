@@ -149,11 +149,10 @@ data/raw/variant_09/raw_YYYYMMDD_HHMMSS.json
    Вложенные поля приводятся к удобному формату:
 
    | Raw поле        | Normalized поле |
-   | --------------- | --------------- |
-   | indicator.id    | indicator_id    |
-   | indicator.value | indicator_name  |
-   | country.id      | country_id      |
-   | country.value   | country_name    |
+   |-----------------|-----------------|
+   | indicator.id    | indicator       |
+   | countryiso3code | country_iso3    |
+   | date            | year            |
 
 4. **Приведение типов данных**
 
@@ -203,13 +202,22 @@ data/normalized/normalized_20260305_102335.csv
 
 Основные поля таблицы:
 
-* `country_id`
-* `country_name`
-* `countryiso3code`
-* `indicator_id`
-* `indicator_name`
-* `date`
-* `value`
+
+* year 
+* value
+* country_iso3 
+* indicator 
+
+---
+
+### Пример строки normalized-таблицы
+
+| year | value            | country_iso3 | indicator      |
+| ---- | ---------------- | ------------ | -------------- |
+| 2024 | 2173835806671.66 | RUS          | NY.GDP.MKTP.CD |
+
+---
+
 
 Полная схема таблицы описана в документе:
 

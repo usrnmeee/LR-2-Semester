@@ -105,25 +105,23 @@ API возвращает JSON-массив из двух элементов:
 
 ## Схема normalized-таблицы
 
-| Поле            | Тип      | Nullable | Источник в raw JSON | Описание                            |
-| --------------- | -------- | -------- | ------------------- | ----------------------------------- |
-| country_id      | string   | no       | `country.id`        | Двухбуквенный код страны            |
-| country_name    | string   | no       | `country.value`     | Название страны                     |
-| countryiso3code | string   | no       | `countryiso3code`   | Трёхбуквенный ISO-код страны        |
-| indicator_id    | string   | no       | `indicator.id`      | Код экономического индикатора       |
-| indicator_name  | string   | no       | `indicator.value`   | Название экономического индикатора  |
-| date            | datetime | no       | `date`              | Год наблюдения                      |
-| value           | float    | yes      | `value`             | Значение GDP в текущих долларах США |
+| Поле         | Тип    | Nullable | Источник в raw JSON | Описание                            |
+| ------------ | ------ | -------- | ------------------- | ----------------------------------- |
+| year         | int    | no       | `date`              | Год наблюдения                      |
+| value        | float  | yes      | `value`             | Значение GDP в текущих долларах США |
+| country_iso3 | string | no       | `countryiso3code`   | Трёхбуквенный ISO-код страны        |
+| indicator    | string | no       | `indicator.id`      | Код экономического индикатора       |
 
 ---
 
 ## Пример строки normalized-таблицы
 
-| country_id | country_name       | countryiso3code | indicator_id   | indicator_name    | date | value            |
-| ---------- | ------------------ | --------------- | -------------- | ----------------- | ---- | ---------------- |
-| RU         | Russian Federation | RUS             | NY.GDP.MKTP.CD | GDP (current US$) | 2024 | 2173835806671.66 |
+| year | value            | country_iso3 | indicator      |
+| ---- | ---------------- | ------------ | -------------- |
+| 2024 | 2173835806671.66 | RUS          | NY.GDP.MKTP.CD |
 
 ---
+
 
 ## Основные преобразования (raw → normalized)
 
