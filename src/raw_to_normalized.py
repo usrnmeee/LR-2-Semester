@@ -2,9 +2,9 @@ import json
 import pandas as pd
 
 # Загрузка JSON
-FILE_NAME = "raw_20260305_102335"
+TIMESTAMP = "20260305_102335"
 
-with open(f"../data/raw/variant_09/{FILE_NAME}.json") as f:
+with open(f"../data/raw/variant_09/eaw_{TIMESTAMP}.json") as f:
     data = json.load(f)
 
 # Берём только список записей
@@ -52,6 +52,6 @@ print(df.isna().sum())
 # Сохранение
 
 df.to_csv(
-    f"../data/normalized/variant_09/normalized{FILE_NAME[3:]}.csv",
+    f"../data/normalized/variant_09/normalized{TIMESTAMP}.csv",
     index=False
 )
