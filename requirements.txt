@@ -1,3 +1,6 @@
 pandas
 pyyaml
 requests
+sqlalchemy
+dotenv
+psycopg2

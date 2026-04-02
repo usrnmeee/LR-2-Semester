@@ -1,0 +1,10 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: Lab
+    environment:
+      POSTGRES_DB: lab
+      POSTGRES_USER: usrnme
+      POSTGRES_PASSWORD: 123
+    ports:
+      - "5432:5432"
