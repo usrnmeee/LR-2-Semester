@@ -486,7 +486,7 @@ API → Raw JSON → Normalized CSV → Mart (KPI)
 
 * Путь:  
   ```text
-  data/state.json
+  data/state/state.json
   ```
 
 * Функциональность `extract`:
@@ -499,7 +499,7 @@ API → Raw JSON → Normalized CSV → Mart (KPI)
 ### Использование `state` в `transform` и `mart`
 
 #### `transform.py`
-* Читает `data/state.json`.
+* Читает `data/state/state.json`.
 * Использует `state["variant"]` и `state["timestamp"]` для построения пути:
   ```python
   raw_path = Path("data") / "raw" / f"variant_{variant}" / f"eaw_{TIMESTAMP}.json"
@@ -528,7 +528,7 @@ df = pd.read_csv(normalized_path)
 
 #### `load.py`
 
-* Читает `data/state.json` для получения `variant` и `TIMESTAMP`.
+* Читает `data/state/state.json` для получения `variant` и `TIMESTAMP`.
 * Формирует пути к витринам:
   ```python
   mart_yearly_path = Path("data") / "mart" / f"variant_{variant}" / f"mart_yearly_{TIMESTAMP}.csv"
@@ -627,7 +627,7 @@ df = pd.read_csv(normalized_path)
   ```
   с режимами `full` и `incremental`.
 
-* Введён **`data/state.json`**:
+* Введён **`data/state/state.json`**:
   * хранит `variant`, `timestamp`, `last_date`, `last_successful_run`;
   * `extract` обновляет `state` только после успешного `load`.
 
@@ -644,7 +644,7 @@ df = pd.read_csv(normalized_path)
 
 ### Обоснование `state.json` и `watermark`
 
-* Хранить `state` в `data/state.json` выгодно, потому что:
+* Хранить `state` в `data/state/state.json` выгодно, потому что:
   * это **отдельный файл**, который можно резервировать / версионировать;
   * структура `state` едина для всех `variant` и `source_type`;
   * по `last_date` и `timestamp` однозначно идентифицируется “последний успешный набор данных”.

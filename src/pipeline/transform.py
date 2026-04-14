@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 
 
-def load_state(state_path: str = "data/state.json") -> dict:
+def load_state(state_path: str = "data/state/state.json") -> dict:
     path = Path(state_path)
     if path.exists():
         with open(path, "r", encoding="utf-8") as f:

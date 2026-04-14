@@ -9,7 +9,7 @@ import pandas as pd
 
 DEFAULT_TIMEOUT = 30  # seconds
 
-STATE_PATH = "data/state.json"
+STATE_PATH = "data/state/state.json"
 
 
 def load_config(config_path: str) -> dict:
