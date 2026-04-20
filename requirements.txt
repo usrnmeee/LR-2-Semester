@@ -4,3 +4,5 @@ requests
 sqlalchemy
 dotenv
 psycopg2
+matplotlib
+seaborn

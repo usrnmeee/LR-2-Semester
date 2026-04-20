@@ -6,8 +6,8 @@ REM CONFIG
 REM =========================
 set ENV_NAME=data_env
 set PYTHON_VERSION=3.11
-set REQUIREMENTS=../LR-2-Semester/requirements.txt
-set TEST_SCRIPT=../LR-2-Semester/broken_env.py
+set REQUIREMENTS=../requirements.txt
+set TEST_SCRIPT=../broken_env.py
 
 echo =========================
 echo       SETUP START

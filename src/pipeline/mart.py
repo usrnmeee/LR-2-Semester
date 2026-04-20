@@ -11,6 +11,13 @@ def load_state(state_path: str = "data/state/state.json") -> dict:
     else:
         raise FileNotFoundError(f"state.json not found: {path}")
 
+def format_gdp(x):
+    if pd.isna(x):
+        return "nan"
+    # делим на 10^9 -> миллиарды
+    x_bln = x / 1e9
+    return f"{x_bln:.2f}"
+
 
 def mart_data() -> None:
     state = load_state()
@@ -48,6 +55,8 @@ def mart_data() -> None:
     print("Yearly mart:\n", mart_yearly.head())
     print("Shape:", mart_yearly.shape)
     print("NaN sum:\n", mart_yearly.isna().sum(), "\n")
+
+    mart_yearly["gdp"] = mart_yearly["gdp"].apply(format_gdp)
 
     year_max = df_clean["year"].max()
     latest_row = df_clean[df_clean["year"] == year_max].iloc[0]
