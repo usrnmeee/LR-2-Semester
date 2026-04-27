@@ -1,0 +1,75 @@
+{
+  "generated_at": "2026-04-27T19:33:21.123472",
+  "table": "mart_yearly",
+  "columns": [
+    "year",
+    "country_name",
+    "gdp",
+    "gdp_diff",
+    "gdp_growth_pct"
+  ],
+  "checks": [
+    {
+      "check_name": "check_non_empty",
+      "status": "PASS",
+      "message": "Table has rows",
+      "details": {
+        "n_rows": 37
+      }
+    },
+    {
+      "check_name": "check_not_null",
+      "status": "PASS",
+      "message": "No NULL in key columns",
+      "details": {
+        "year": 0,
+        "country_name": 0,
+        "gdp": 0
+      }
+    },
+    {
+      "check_name": "check_unique_key",
+      "status": "PASS",
+      "message": "All rows unique by (country_name, year)",
+      "details": {
+        "n_total": 37,
+        "n_duplicated": 0,
+        "n_unique_keys": 37
+      }
+    },
+    {
+      "check_name": "check_year_range",
+      "status": "PASS",
+      "message": "All years in [1960, current_year]",
+      "details": {
+        "min_year": "1988",
+        "max_year": "2024",
+        "n_out_of_range": 0
+      }
+    },
+    {
+      "check_name": "check_null_ratio_gdp_diff",
+      "status": "PASS",
+      "message": "NULL ratio acceptable",
+      "details": {
+        "field": "gdp_diff",
+        "n_total": 37,
+        "n_null": "1",
+        "ratio": 0.02702702702702703,
+        "max_ratio": 0.1
+      }
+    },
+    {
+      "check_name": "check_null_ratio_gdp_growth_pct",
+      "status": "PASS",
+      "message": "NULL ratio acceptable",
+      "details": {
+        "field": "gdp_growth_pct",
+        "n_total": 37,
+        "n_null": "1",
+        "ratio": 0.02702702702702703,
+        "max_ratio": 0.1
+      }
+    }
+  ]
+}

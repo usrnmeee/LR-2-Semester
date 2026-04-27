@@ -263,3 +263,17 @@ Mart-данные используются для:
 * дальнейшего использования в аналитических системах.
 
 В отличие от normalized-слоя, mart содержит **уже агрегированные и интерпретируемые данные**, готовые для конечного пользователя.
+
+
+# Data Contract: DQ Rules для mart_yearly
+
+### 1. Проверки уровня `mart`
+
+| Проверка                     | Слой | Критичность | Что считается нарушением                                                  |
+|------------------------------|------|-------------|---------------------------------------------------------------------------|
+| `check_non_empty`            | mart | FAIL        | Таблица `mart_yearly` пуста (0 строк).                                    |
+| `check_not_null`             | mart | FAIL        | `year`, `country_name` или `gdp` содержит `NULL`.                         |
+| `check_unique_key`           | mart | FAIL        | Нарушена уникальность по ключу `(country_name, year)`.                   |
+| `check_year_range`           | mart | WARN        | `year < 1960` или `year > текущий год`.                                 |
+| `check_null_ratio_gdp_diff`  | mart | WARN        | Доля `NULL` в `gdp_diff` > 10%.                                          |
+| `check_null_ratio_gdp_growth_pct` | mart | WARN  | Доля `NULL` в `gdp_growth_pct` > 10%.                                    |

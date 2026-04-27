@@ -29,7 +29,7 @@ normalized_schema:
   desc: Код индикатора.
 kpis:
 - Последнее доступное значение (latest_value) и год (latest_year).
-- 'Изменение за 10 лет: delta_10y = value(year) - value(year-10).'
+- Изменение за 10 лет: delta_10y = value(year) - value(year-10).
 - Среднее значение за последние 10 лет (avg_10y).
 - Год максимума и минимума (без NULL).
 dq_rules:
