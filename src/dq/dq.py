@@ -2,18 +2,17 @@ import os
 from datetime import datetime
 from pathlib import Path
 import pandas as pd
-from typing import List, Dict, Optional
+from typing import List, Dict
+import json
 
 
 def read_mart(yearly_csv: str) -> pd.DataFrame:
-    """Читаем mart_yearly с колонками:
-    year, country_name, gdp, gdp_diff, gdp_growth_pct."""
     path = Path(yearly_csv)
     df = pd.read_csv(
         path,
         names=["year", "country_name", "gdp", "gdp_diff", "gdp_growth_pct"],
         header=0,
-    ).dropna(how="all")  # убираем полностью пустые строки, если есть
+    ).dropna(how="all")
     return df
 
 
@@ -216,23 +215,21 @@ def save_dq_report_md(checks: List[Dict], output_path: str) -> None:
             f.write(f"| {chk['check_name']} | {chk['status']} | {msg} |\n")
 
 
-def main(input_csv: str, output_dir: str):
-    """Основная точка входа DQ‑проверок для mart_yearly."""
+def main(output_dir: str):
+    state = load_state()
+    TIMESTAMP = state["timestamp"]
 
-    df = read_mart(input_csv)
+    df = read_mart(f"data/mart/variant_09/mart_yearly_{TIMESTAMP}.csv")
     print("Shape of loaded mart:", df.shape)
 
     checks = run_dq_checks(df)
 
-    # JSON report
     json_path = os.path.join(output_dir, "dq_report.json")
     save_dq_report_json(checks, json_path)
 
-    # Markdown report
     md_path = os.path.join(output_dir, "dq_report.md")
     save_dq_report_md(checks, md_path)
 
-    # Вывод в консоль для наглядности
     print("\n=== DQ Report (summary) ===")
     for chk in checks:
         print(f"  {chk['check_name']:25} {chk['status']:5} – {chk['message']}")
@@ -240,9 +237,15 @@ def main(input_csv: str, output_dir: str):
     print(f"\nReports saved to: {output_dir}")
 
 
+def load_state(state_path: str = "data/state/state.json") -> dict:
+    path = Path(state_path)
+    if path.exists():
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    else:
+        raise FileNotFoundError(f"state.json not found: {path}")
+
 if __name__ == "__main__":
-    # Пример запуска
     main(
-        input_csv="data/mart/variant_09/mart_yearly_20260420_235136.csv",
-        output_dir="data/dq/",
+        output_dir="docs/dq/",
     )

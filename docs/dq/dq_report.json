@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-27T19:33:21.123472",
+  "generated_at": "2026-04-28T13:31:41.020718",
   "table": "mart_yearly",
   "columns": [
     "year",
@@ -42,8 +42,8 @@
       "status": "PASS",
       "message": "All years in [1960, current_year]",
       "details": {
-        "min_year": "1988",
-        "max_year": "2024",
+        "min_year": 1988,
+        "max_year": 2024,
         "n_out_of_range": 0
       }
     },
