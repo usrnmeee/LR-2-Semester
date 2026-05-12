@@ -19,11 +19,16 @@ def load_state(state_path: str = "data/state/state.json") -> dict:
 
 
 def load_data(mode: str = "full"):
+    required = ["DB_USER", "DB_PASSWORD", "DB_HOST", "DB_PORT", "DB_NAME"]
+    for key in required:
+        if not os.getenv(key):
+            raise ValueError(f"Environment variable {key} is not set!")
 
     DB_URL = (
         f"postgresql+psycopg2://"
         f"{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
-        f"{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+        f"{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}"
+        f"/{os.getenv('DB_NAME')}"
     )
 
     state = load_state()
@@ -52,6 +57,7 @@ def load_data(mode: str = "full"):
 
         df = pd.read_csv(path)
         files_data[name] = df
+
         print(f"\n{name}:")
         print(f"  Path: {os.path.abspath(path)}")
         print(f"  Shape: {df.shape}")
@@ -83,7 +89,7 @@ def load_data(mode: str = "full"):
 
     print("Loading complete!")
 
-    print("\nChecking tables...:")
+    print("\nChecking tables...")
     with engine.connect() as conn:
         for name, table_name in TABLE_NAMES.items():
             if name in files_data:
