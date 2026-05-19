@@ -7,3 +7,5 @@ psycopg2
 matplotlib
 seaborn
 pytest
+pendulum
+apache-airflow
