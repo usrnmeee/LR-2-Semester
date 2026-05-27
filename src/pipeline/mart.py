@@ -19,6 +19,20 @@ def format_gdp(x):
     return f"{x_bln:.2f}"
 
 
+def format_gdp_diff(x):
+    if pd.isna(x):
+        return "nan"
+    # делим на 10^9 -> миллиарды
+    x_bln = x / 1e9
+    return f"{x_bln:.2f}"
+
+
+def format_gdp_growth_pct(x):
+    if pd.isna(x):
+        return "nan"
+    return f"{x:.2f}"
+
+
 def mart_data() -> None:
     state = load_state()
     variant = state["variant"]  # "09"
@@ -56,7 +70,10 @@ def mart_data() -> None:
     print("Shape:", mart_yearly.shape)
     print("NaN sum:\n", mart_yearly.isna().sum(), "\n")
 
+    mart_yearly = mart_yearly.copy()
     mart_yearly["gdp"] = mart_yearly["gdp"].apply(format_gdp)
+    mart_yearly["gdp_diff"] = mart_yearly["gdp_diff"].apply(format_gdp_diff)
+    mart_yearly["gdp_growth_pct"] = mart_yearly["gdp_growth_pct"].apply(format_gdp_growth_pct)
 
     year_max = df_clean["year"].max()
     latest_row = df_clean[df_clean["year"] == year_max].iloc[0]
