@@ -76,4 +76,15 @@ with DAG(
         """,
     )
 
-    extract >> transform >> mart >> load >> dq
+    llm_summary = BashOperator(
+        task_id="llm_summary",
+        bash_command=f"""
+        set -e
+        echo "{LOG_PREFIX} llm_summary started"
+        cd {PROJECT_ROOT}
+        python src/pipeline/llm_summary.py --no-log
+        echo "{LOG_PREFIX} llm_summary finished"
+        """,
+    )
+
+    extract >> transform >> mart >> load >> dq >> llm_summary

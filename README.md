@@ -132,6 +132,7 @@ data/
 * `docs/Implementation_Plan.md` — план реализации ETL-пайплайна
 * `docs/Data_Contract.md` — описание источника данных и схемы таблиц
 * `docs/LLM_Usage_Log.md` — журнал использования LLM при разработке
+* `docs/llm/summary.md` — финальная LLM-сводка по уже рассчитанным метрикам
 
 ---
 
@@ -226,7 +227,43 @@ World Bank API
         ↓
    PostgreSQL
         ↓
+       DQ
+        ↓
+   LLM Summary
+        ↓
     Metabase
+```
+
+Финальный воспроизводимый запуск из корня проекта:
+
+```bash
+python -m src.pipeline.pipeline --mode full
+```
+
+Инкрементальный режим:
+
+```bash
+python -m src.pipeline.pipeline --mode incremental
+```
+
+Эта команда последовательно выполняет `extract`, `transform`, `mart`, `load`, `dq` и `llm_summary`.
+
+При необходимости DQ-отчет можно пересоздать отдельно:
+
+```bash
+python -m src.dq.dq
+```
+
+LLM-сводку также можно пересоздать отдельно без API-ключа, только по готовым агрегатам:
+
+```bash
+python -m src.pipeline.llm_summary
+```
+
+Если нужно выполнить реальный запрос к LLM API, ключ хранится только в `.env`, а запуск выполняется так:
+
+```bash
+python -m src.pipeline.llm_summary --use-api
 ```
 
 ---
@@ -279,6 +316,37 @@ src/dq/dq.py
 * отсутствие пустых таблиц;
 * контроль диапазонов значений;
 * проверку структуры таблиц.
+
+Актуальные отчеты сохраняются в:
+
+```text
+docs/dq/dq_report.md
+docs/dq/dq_report.json
+```
+
+---
+
+# LLM-summary и анти-галлюцинации
+
+В week14 LLM используется только как слой интерпретации, а не как слой вычислений.
+
+Скрипт:
+
+```text
+src/pipeline/llm_summary.py
+```
+
+Что делает скрипт:
+
+* читает только агрегаты из `data/mart/variant_09/mart_stats_*.csv` и `mart_yearly_*.csv`;
+* читает DQ-статус из `docs/dq/dq_report.json`;
+* формирует короткий строгий контекст;
+* запрещает LLM придумывать числа или считать новые метрики;
+* сохраняет результат в `docs/llm/summary.md`;
+* добавляет запись в `docs/LLM_Usage_Log.md`;
+* автоматически сверяет наличие ключевых чисел из контекста в итоговой сводке.
+
+Raw JSON, большие таблицы и приватные данные в LLM не отправляются.
 
 ---
 
@@ -378,3 +446,37 @@ docker compose up airflow-init
 * ETL pipeline
 
 без необходимости ручной настройки окружения.
+
+---
+
+# Безопасность переменных окружения
+
+Файл `.env` не коммитится в Git. Для проверки структуры переменных используется шаблон:
+
+```text
+.env.example
+```
+
+Минимальные переменные:
+
+```text
+DB_USER=
+DB_PASSWORD=
+DB_HOST=
+DB_PORT=
+DB_NAME=
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-4o-mini
+```
+
+---
+
+# Минимальный комплект для сдачи week14
+
+* `README.md` с командами запуска.
+* `src/pipeline/pipeline.py` и модули ETL.
+* `docs/dq/dq_report.md` и `docs/dq/dq_report.json`.
+* BI-скриншоты в `docs/bi/`.
+* LLM-сводка `docs/llm/summary.md`.
+* Журнал использования LLM `docs/LLM_Usage_Log.md`.
+* `.gitignore` и `.env.example` для безопасной работы с ключами.

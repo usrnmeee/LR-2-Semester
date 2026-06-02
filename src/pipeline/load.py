@@ -8,6 +8,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+def running_inside_docker() -> bool:
+    return Path("/.dockerenv").exists()
+
+
+def resolve_db_host(host: str) -> str:
+    if host == "postgres" and os.name == "nt" and not running_inside_docker():
+        return "localhost"
+    return host
+
+
 def load_state(state_path: str = "data/state/state.json") -> dict:
     path = Path(state_path)
     if path.exists():
@@ -23,10 +33,12 @@ def load_data(mode: str = "full"):
         if not os.getenv(key):
             raise ValueError(f"Environment variable {key} is not set!")
 
+    db_host = resolve_db_host(os.getenv("DB_HOST"))
+
     DB_URL = (
         f"postgresql+psycopg2://"
         f"{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
-        f"{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}"
+        f"{db_host}:{os.getenv('DB_PORT')}"
         f"/{os.getenv('DB_NAME')}"
     )
 

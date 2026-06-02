@@ -2,7 +2,7 @@ pandas
 pyyaml
 requests
 sqlalchemy
-dotenv
+python-dotenv
 psycopg2
 matplotlib
 seaborn

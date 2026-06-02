@@ -1,6 +1,6 @@
 import argparse
-import yaml
-from . import extract, transform, mart, load
+from src.dq import dq
+from . import extract, transform, mart, load, llm_summary
 
 
 def main():
@@ -12,6 +12,8 @@ def main():
     transform.transform_data()
     mart.mart_data()
     load.load_data(mode=args.mode)
+    dq.main(output_dir="docs/dq/")
+    llm_summary.generate_summary()
 
     print("Pipeline executed in mode:", args.mode)
 
